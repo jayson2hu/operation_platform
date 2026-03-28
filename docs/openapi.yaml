@@ -1,0 +1,211 @@
+openapi: 3.1.0
+info:
+  title: Operations Platform API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /auth/login:
+    post:
+      summary: Login
+      responses:
+        '200':
+          description: OK
+  /auth/me:
+    get:
+      summary: Current user
+      responses:
+        '200':
+          description: OK
+  /teams:
+    post:
+      summary: Create team
+      responses:
+        '201':
+          description: Created
+  /teams/{teamId}:
+    get:
+      summary: Get team
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+  /contents:
+    get:
+      summary: List contents
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create content
+      responses:
+        '201':
+          description: Created
+  /contents/{contentId}:
+    get:
+      summary: Get content
+      parameters:
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+    patch:
+      summary: Update content
+      responses:
+        '200':
+          description: OK
+  /contents/{contentId}/versions:
+    post:
+      summary: Create content version
+      responses:
+        '201':
+          description: Created
+    get:
+      summary: List content versions
+      responses:
+        '200':
+          description: OK
+  /contents/{contentId}/versions/{versionNo}/approval-pack:
+    get:
+      summary: Export approval-ready snapshot by channel
+      parameters:
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: versionNo
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: channel_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [wechat_oa, xiaohongshu]
+      responses:
+        '200':
+          description: OK
+  /adaptations/{adaptationId}:
+    get:
+      summary: Get adaptation
+      responses:
+        '200':
+          description: OK
+    patch:
+      summary: Update adaptation
+      responses:
+        '200':
+          description: OK
+  /adaptations/{adaptationId}/validate:
+    post:
+      summary: Validate adaptation
+      responses:
+        '200':
+          description: OK
+  /channel-accounts:
+    get:
+      summary: List channel accounts
+      responses:
+        '200':
+          description: OK
+  /channel-accounts/connect/wechat:
+    post:
+      summary: Connect WeChat OA account
+      responses:
+        '201':
+          description: Created
+  /channel-accounts/connect/xiaohongshu:
+    post:
+      summary: Connect Xiaohongshu account
+      responses:
+        '201':
+          description: Created
+  /publish-tasks:
+    get:
+      summary: List publish tasks
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create publish task
+      responses:
+        '201':
+          description: Created
+  /publish-tasks/{taskId}:
+    get:
+      summary: Get publish task
+      responses:
+        '200':
+          description: OK
+  /publish-tasks/{taskId}/retry:
+    post:
+      summary: Retry publish task
+      responses:
+        '200':
+          description: OK
+  /publish-tasks/{taskId}/manual-complete:
+    post:
+      summary: Mark manual-assisted task complete
+      responses:
+        '200':
+          description: OK
+  /analytics/overview:
+    get:
+      summary: Analytics overview
+      responses:
+        '200':
+          description: OK
+  /analytics/posts/{platformPostId}:
+    get:
+      summary: Post analytics detail
+      responses:
+        '200':
+          description: OK
+  /analytics/sync:
+    post:
+      summary: Sync analytics
+      responses:
+        '202':
+          description: Accepted
+components:
+  schemas:
+    ValidationItem:
+      type: object
+      properties:
+        code:
+          type: string
+        field:
+          type: string
+        level:
+          type: string
+        message:
+          type: string
+    ValidationResult:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [valid, warning, blocked]
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationItem'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationItem'
